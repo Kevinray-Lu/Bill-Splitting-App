@@ -72,7 +72,7 @@ app.post('/exist', function(req, res) {
 
 app.get('/personal', function(req, res) {
 	if (req.session.username === undefined) {
-		res.render('home', {error: 'Please login or register first!'});
+		res.redirect('login');
 	}
 	else {
 	doc.find({owner: req.session.username.username}, function(err, varToStoreResult) {
@@ -89,6 +89,9 @@ app.post('/personal', function(req, res) {
 	
 });
 app.get('/new', (req, res) => {
+	if (req.session.username === undefined) {
+		res.redirect('login');
+	}
 	res.render('new');
 });
 app.post('/new', function(req, res) {
@@ -103,7 +106,7 @@ app.post('/new', function(req, res) {
 		console.log(Object.keys(req.body));
 		let people_details = new Array(people.length);
 		for (let j = 0; j < people.length; j ++) {
-			people_details[j] = {name: people[j], balance: 0};
+			people_details[j] = {name: people[j], balance: parseFloat(1.2)};
 		}
 		new doc({
 					name: Object.keys(req.body)[1],
@@ -130,7 +133,31 @@ app.post('/new', function(req, res) {
 
 app.get('/trips/:slug', (req, res) => {
 	let slug1 = req.path.split('/');
-	slug1 = slug1[2];
+	slug1 = slug1[2].toLowerCase();
+	
+	if (req.session.username !== undefined) {
+		User.findOneAndUpdate({username: req.session.username.username, doc_ref: {$ne: slug1}},{
+							"$push": {
+								"doc_ref": slug1}},
+								{new: true}, (err, doc) => {
+									//console.log(doc);
+									
+									if (err) {
+										console.log(err);
+									}
+								});
+		doc.findOneAndUpdate({_id: slug1, owner: {$ne: req.session.username.username}},{
+							"$push": {
+							"owner": req.session.username.username}},
+							{new: true}, (err, doc) => {
+									//console.log(doc);
+									
+									if (err) {
+										console.log(err);
+									}
+								});
+	}
+	
 	//console.log(req.query);
 	let method = {"split": false, "dollar": false, "percent": false};
 	if (req.query.method !== undefined) {

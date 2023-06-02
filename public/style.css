@@ -1608,7 +1608,8 @@ body {font-family: 'Raleway', sans-serif;}
 .rated-list li:last-child {
   border-bottom: none;
 }
-.single-widget.rated .single-product .product-name{
+.single-widget.rated .single-product .
+{
   font-size: 14px;
   margin: 0 0 10px;
 }
@@ -2344,8 +2345,8 @@ color: #990000
 }
 .wishlist-table input[type='text']{
   margin: auto;
-  background: #990000  none repeat scroll 0 0;
-  color: #fff;
+  background: aliceblue none repeat scroll 0 0;
+  color: #000000;
   display: inline-block;
   font-weight: 700;
   padding: 10px 30px;
@@ -2389,8 +2390,8 @@ color: #990000
 }
 
 .wishlist-table .label-input input{
-  background: #990000  none repeat scroll 0 0;
-  color: #fff;
+  background: #aliceblue  none repeat scroll 0 0;
+  color: #000000;
   margin-left: auto;
   width: 130px;
   text-align: right;

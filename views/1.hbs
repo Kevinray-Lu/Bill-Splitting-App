@@ -132,8 +132,8 @@
 						<div class="header-menu">
 							<ul id="nav">
 								<li><a href="/">HOME</a></li>
-								<li><a href="personal">PERSONAL</a></li>
-								<li><a href="exist">JOIN JOURNEY</a></li>
+								<li><a href="/personal">PERSONAL</a></li>
+								<li><a href="/exist">JOIN JOURNEY</a></li>
 
 							</ul>
 						</div>
@@ -154,8 +154,8 @@
 							<nav id="dropdown">
 								<ul>
 								<li><a href="/">HOME</a></li>
-								<li><a href="personal">PERSONAL</a></li>
-								<li><a href="exist">JOIN JOURNEY</a></li>
+								<li><a href="/personal">PERSONAL</a></li>
+								<li><a href="/exist">JOIN JOURNEY</a></li>
 								</ul>
 							</nav>
 						</div>
@@ -193,7 +193,7 @@
                                         <thead>
 										<h1>Outstanding balances: </h1>
 										{{#each people}}
-										<th class="product-name"><span class="nobr">{{name}} : {{#with balance}}{{this.toFixed 1}}{{/with}}</span></th>
+										<th class="product-name"><span class="nobr">{{name}} : {{#if balance}}{{#with balance}}{{this.toFixed 2}}{{/with}}{{else}}0.00{{/if}}</span></th>
 										{{/each}}
 										</thead>
 									</table>

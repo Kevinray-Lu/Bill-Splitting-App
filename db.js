@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const doc = new mongoose.Schema({
 	name: String,
 	participants: [{name:String, balance: Number}],
-	owner: {type: String, ref: 'User.username' },
+	owner: [{type: String, ref: 'User.username' }],
 	moves:
     [{
         person: String,

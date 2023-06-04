@@ -193,7 +193,7 @@ app.post('/trips/:slug', function(req, res) {
 				if (Object.keys(removedMove.person_to).includes(participant.name)) {
 					participant.balance -= removedMove.person_to[participant.name];
 				}
-				if (removedMove.person === participant.name) {
+				if (removedMove.person.toLowerCase() === participant.name.toLowerCase()) {
 					participant.balance += removedMove.amount;
 				}
 			}
@@ -214,6 +214,7 @@ app.post('/trips/:slug', function(req, res) {
 		res.redirect('/trips/'+slug1);							
 			
 	} else if (req.body.sub !== undefined) {
+		let er = 0;
 		let method = {"split": false, "dollar": false, "percent": false};
 		let choice = req.body.method;
 		method[choice] = true;
@@ -232,13 +233,16 @@ app.post('/trips/:slug', function(req, res) {
 		if (typeof(total) !== 'string') {
 			total = total.reduce((tot, a) => tot+parseFloat(a), 0);
 		}
-		
+		if (isNaN(total)) {
+			er = 1
+		}
 		if (req.body.method === "split") {
 			inp2 = req.body.person;
-			if (typeof inp2 === 'string') {
+			if (req.body.person === undefined) {
+				er = 1;
+			}else if (typeof inp2 === 'string') {
 				inp[inp2] = parseFloat(total);
 			}else{
-				console.log('here');
 				for (let i = 0; i < inp2.length; i ++) {
 					inp[inp2[i]] = total/inp2.length;
 				}
@@ -301,17 +305,22 @@ app.post('/trips/:slug', function(req, res) {
 				
 		console.log(inp);
 		for (item of Object.values(inp)) {
-			if (isNAN(total)) {
-				doc.find({_id: slug1}, function (err, result) {
+			if (isNaN(item)) {
+					er = 1
+					break;
+			}
+		}
+		if (er === 1 || inp === {}) {
+			doc.find({_id: slug1}, function (err, result) {
 					if (err) {console.log(err);}
 							//console.log(result);
 							let item = result[0].participants;
 							let moves = result[0].moves;
 							let id = result[0]._id;
-							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount you entered"});
+							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
 					});
-			}
 		}
+		else {
 		const to_length = inp.length;
 		const money = parseFloat(req.body.amount);
 		const name = req.body.name;
@@ -335,7 +344,7 @@ app.post('/trips/:slug', function(req, res) {
 											if (Object.keys(inp).includes(participant.name)) {
 												participant.balance += inp[participant.name];
 											}
-											if (name === participant.name) {
+											if (name.toLowerCase() === participant.name.toLowerCase()) {
 												participant.balance -= money;
 											}
 										}
@@ -345,9 +354,11 @@ app.post('/trips/:slug', function(req, res) {
 												console.error(saveErr);
 											} 
 										});
-									//res.redirect('/trips/'+slug1);
-									});
 									res.redirect('/trips/'+slug1);
+									});
+									//res.redirect('/trips/'+slug1);
+						}
+
 	}else{
 			//console.log(req.query);
 			let method = {"split": false, "dollar": false, "percent": false};

@@ -214,6 +214,9 @@ app.post('/trips/:slug', function(req, res) {
 		res.redirect('/trips/'+slug1);							
 			
 	} else if (req.body.sub !== undefined) {
+		let method = {"split": false, "dollar": false, "percent": false};
+		let choice = req.body.method;
+		method[choice] = true;
 		let inp = {};
 		console.log(req.body);
 		let total = req.body.amount.replace(/\s/g, '');
@@ -229,6 +232,7 @@ app.post('/trips/:slug', function(req, res) {
 		if (typeof(total) !== 'string') {
 			total = total.reduce((tot, a) => tot+parseFloat(a), 0);
 		}
+		
 		if (req.body.method === "split") {
 			inp2 = req.body.person;
 			if (typeof inp2 === 'string') {
@@ -296,6 +300,18 @@ app.post('/trips/:slug', function(req, res) {
 		}
 				
 		console.log(inp);
+		for (item of Object.values(inp)) {
+			if (isNAN(total)) {
+				doc.find({_id: slug1}, function (err, result) {
+					if (err) {console.log(err);}
+							//console.log(result);
+							let item = result[0].participants;
+							let moves = result[0].moves;
+							let id = result[0]._id;
+							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount you entered"});
+					});
+			}
+		}
 		const to_length = inp.length;
 		const money = parseFloat(req.body.amount);
 		const name = req.body.name;
@@ -333,9 +349,6 @@ app.post('/trips/:slug', function(req, res) {
 									});
 									res.redirect('/trips/'+slug1);
 	}else{
-			console.log(req.body);
-			let slug1 = req.path.split('/');
-			slug1 = slug1[2];
 			//console.log(req.query);
 			let method = {"split": false, "dollar": false, "percent": false};
 			let choice = req.body.method;

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 //Item object for sale
 
 const doc = new mongoose.Schema({
@@ -45,5 +46,6 @@ mongoose.model('User', User);
 // }
 
 // Using local database
-mongoose.connect('mongodb://localhost/split')
+//mongoose.connect('mongodb://localhost/split')
 // Using cloud database
+mongoose.connect(process.env.MONGODB_URI);

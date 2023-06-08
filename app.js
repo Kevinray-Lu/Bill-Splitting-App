@@ -98,15 +98,19 @@ app.post('/new', function(req, res) {
 	if (Object.keys(req.body)[0] === "num") {
 		console.log('now');
 		const key = parseInt(req.body.num);
+		if (isNaN(req.body.num)) {
+			res.render('new', {error: "please enter a valid number of participants!"});
+		}else{
 		console.log(Object.keys(req.body));
 		res.render('new', {num: Array.from(Array(key).keys()), journey: req.body.journey});
+		}
 	}else {
 		console.log('here');
 		const people = Object.values(req.body)[0];
 		console.log(Object.keys(req.body));
 		let people_details = new Array(people.length);
 		for (let j = 0; j < people.length; j ++) {
-			people_details[j] = {name: people[j], balance: parseFloat(1.2)};
+			people_details[j] = {name: people[j], balance: parseFloat(0)};
 		}
 		new doc({
 					name: Object.keys(req.body)[1],

@@ -231,7 +231,7 @@
 													<td class="product-name"></td>
 													<td class="product-name">{{person}}</td>
 													<td class="product-price"><span class="amount">$ {{amount}}</span></td>
-													<td class="product-name">{{#each person_to}}{{@key}} : {{this.toFixed 1}}$<br>{{/each}}</span></td>
+													<td class="product-name">{{#each person_to}}{{@key}} : {{#if this}}{{this.toFixed 1}}{{/if}}$<br>{{/each}}</span></td>
 													<td class="product-name">{{description}}</span></td>
 													<td class="product-add-to-cart">
 													<form method="POST" action=""><input type="submit" name ={{id}} value="Delete"></form>

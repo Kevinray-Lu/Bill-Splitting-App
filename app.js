@@ -255,7 +255,7 @@ app.post('/trips/:slug', function(req, res) {
 			let before = Object.keys(req.body);
 			const ref = ["method", "name", "amount", "description", "sub"];
 			for (const item of before){
-				if (!(ref.includes(item)) && (req.body[item] !== '')) {
+				if (!(ref.includes(item)) && (req.body[item] !== '') && (parseFloat(req.body[item]) !== 0)) {
 					let temp = req.body[item].replace(/\s/g, '');
 					if (temp.includes(',')) {
 						temp = temp.split(',');
@@ -283,7 +283,7 @@ app.post('/trips/:slug', function(req, res) {
 			let remain = [];
 			let partitions = 0
 			for (const item of before){
-				if (!(ref.includes(item)) && (req.body[item] !== '')) {
+				if (!(ref.includes(item)) && (req.body[item] !== '') && (parseFloat(req.body[item]) !== 0)) {
 					let temp = req.body[item].replace(/\s/g, '');
 					if (temp.includes(',')) {
 						temp = temp.split(',');

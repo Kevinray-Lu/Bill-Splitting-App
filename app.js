@@ -12,12 +12,12 @@ var path = require('path');
 
 /*
 todo:
-1. journey Named
-2. own journeys
-2. names at doc 
-3. calculations
-4. delete
-5. access code 
+1. balance reversing
+2. order of adding reverse
+3. subgroups
+4. default splitting
+5. default all selected when splitting 
+6. upload receipt
 */
 
 app.use(express.static('public'));
@@ -47,12 +47,14 @@ app.get('/', function(req, res) {
     res.render('home');
 });
 
+// renders for home page
 app.post('/', function(req, res) {
 	//console.log(Object.keys(req.body));
 	const re = Object.keys(req.body)[0];
 	res.redirect('/'+re);
 });
 
+// renders for accessing existing trips
 app.get('/exist', function(req, res) {
     res.render('exist');
 });
@@ -60,6 +62,7 @@ app.get('/exist', function(req, res) {
 app.post('/exist', function(req, res) {
 	console.log(Object.keys(req.body));
 	const ref = req.body.doc;
+	// find existing trip according to search id
 	doc.findOne({_id: ref},(err, result, count) => {
 			if (!err && result) {
 				console.log(result);
@@ -70,7 +73,9 @@ app.post('/exist', function(req, res) {
 	});
 });
 
+// renders for personal trips, and for options of creating new trips
 app.get('/personal', function(req, res) {
+	// check if logged in, if not redirects to login page
 	if (req.session.username === undefined) {
 		res.redirect('login');
 	}
@@ -87,7 +92,9 @@ app.get('/personal', function(req, res) {
 app.post('/personal', function(req, res) {
 	res.redirect('new');
 	
-});
+}); 
+
+// renders for details of creating a new trip
 app.get('/new', (req, res) => {
 	if (req.session.username === undefined) {
 		res.redirect('login');
@@ -95,6 +102,7 @@ app.get('/new', (req, res) => {
 	res.render('new');
 });
 app.post('/new', function(req, res) {
+	// render form for number of people and name of trip
 	if (Object.keys(req.body)[0] === "num") {
 		console.log('now');
 		const key = parseInt(req.body.num);
@@ -105,6 +113,7 @@ app.post('/new', function(req, res) {
 		res.render('new', {num: Array.from(Array(key).keys()), journey: req.body.journey});
 		}
 	}else {
+		// render form for each participants name
 		console.log('here');
 		const people = Object.values(req.body)[0];
 		console.log(Object.keys(req.body));
@@ -135,10 +144,11 @@ app.post('/new', function(req, res) {
 	}
 });
 
+//render page for specific trip
 app.get('/trips/:slug', (req, res) => {
 	let slug1 = req.path.split('/');
 	slug1 = slug1[2].toLowerCase();
-	
+	// add current trip to logged in user if logged in and not there already
 	if (req.session.username !== undefined) {
 		User.findOneAndUpdate({username: req.session.username.username, doc_ref: {$ne: slug1}},{
 							"$push": {
@@ -161,7 +171,7 @@ app.get('/trips/:slug', (req, res) => {
 									}
 								});
 	}
-	
+	// set default splitting method to split, and render form
 	//console.log(req.query);
 	let method = {"split": false, "dollar": false, "percent": false};
 	if (req.query.method !== undefined) {
@@ -170,11 +180,15 @@ app.get('/trips/:slug', (req, res) => {
 		method["split"]= true;
 	}
 	//console.log(method);
+	// search moves entries for current Document
 	doc.find({_id: slug1}, function (err, result) {
 		if (err) {console.log(err);}
 				//console.log(result);
 				let item = result[0].participants;
-				let moves = result[0].moves;
+				for (participant of item) {
+					participant.balance = participant.balance * -1;
+				}
+				let moves = result[0].moves.reverse();
 				let id = result[0]._id;
 				res.render('1', {people: item, moves: moves, id: id, method: method});
 			});
@@ -183,15 +197,18 @@ app.get('/trips/:slug', (req, res) => {
 app.post('/trips/:slug', function(req, res) {
 	let slug1 = req.path.split('/');
 	slug1 = slug1[2];
+	// update the form if delete button is clicked
 	//console.log(req.body);
 	if (Object.values(req.body)[0] === "Delete") {
 		const remove = Object.keys(req.body)[0];
+		// first find the move
 		doc.findOne({"moves._id": remove}, {'moves.$': 1, participants:1}, (err, result) => {
 			if (err) {
 				console.log(err);
 			}
 			const removedMove = result.moves[0];
 			console.log(result.moves);
+			// update payees and payers balance
 			const participants = result.participants;
 			for (const participant of participants) {
 				if (Object.keys(removedMove.person_to).includes(participant.name)) {
@@ -208,6 +225,7 @@ app.post('/trips/:slug', function(req, res) {
 				} 
 			});
 		});
+		// remove move at the end.
 		doc.findOneAndUpdate({"moves._id": remove}, {
 		$pull: { moves: { _id: remove } }},
 		(err, doc) => {
@@ -216,7 +234,7 @@ app.post('/trips/:slug', function(req, res) {
 			}
 		});
 		res.redirect('/trips/'+slug1);							
-			
+	// case when add button is clicked, add new entry to the Document
 	} else if (req.body.sub !== undefined) {
 		let er = 0;
 		let method = {"split": false, "dollar": false, "percent": false};
@@ -224,6 +242,7 @@ app.post('/trips/:slug', function(req, res) {
 		method[choice] = true;
 		let inp = {};
 		console.log(req.body);
+		// check validity of total amount added, add the amount if needed, and set er to 1 if not number 
 		let total = req.body.amount.replace(/\s/g, '');
 		if (total.includes(',')) {
 			total = total.split(',');
@@ -240,6 +259,7 @@ app.post('/trips/:slug', function(req, res) {
 		if (isNaN(total)) {
 			er = 1
 		}
+		// case for split as splitting method
 		if (req.body.method === "split") {
 			inp2 = req.body.person;
 			if (req.body.person === undefined) {
@@ -251,6 +271,7 @@ app.post('/trips/:slug', function(req, res) {
 					inp[inp2[i]] = total/inp2.length;
 				}
 			}
+		// case for adding for splitting method, user enter numbers in splitting fields 
 		} else if (req.body.method === "dollar") {
 			let before = Object.keys(req.body);
 			const ref = ["method", "name", "amount", "description", "sub"];
@@ -277,6 +298,7 @@ app.post('/trips/:slug', function(req, res) {
 					//inp[item]= parseFloat(req.body[item]); 
 				//}
 			//}
+		// case for sharing for splitting method, user enter shares for each in splitting fields
 		} else {
 			let before = Object.keys(req.body);
 			const ref = ["method", "name", "amount", "description", "sub"];
@@ -306,7 +328,7 @@ app.post('/trips/:slug', function(req, res) {
 					inp[item]=(total/partitions)*remain[item];
 			}
 		}
-				
+		// if anything does not contain number so total cannot be calculated, then do not update Document		
 		console.log(inp);
 		for (item of Object.values(inp)) {
 			if (isNaN(item)) {
@@ -324,6 +346,7 @@ app.post('/trips/:slug', function(req, res) {
 							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
 					});
 		}
+		// update document by adding move to it 
 		else {
 		const to_length = inp.length;
 		const money = parseFloat(req.body.amount);
@@ -362,7 +385,7 @@ app.post('/trips/:slug', function(req, res) {
 									});
 									//res.redirect('/trips/'+slug1);
 						}
-
+	// case when splitting method is changed, remember the entries entered by user and refresh the page to show the other method
 	}else{
 			//console.log(req.query);
 			let method = {"split": false, "dollar": false, "percent": false};
@@ -373,12 +396,13 @@ app.post('/trips/:slug', function(req, res) {
 				if (err) {console.log(err);}
 						//console.log(result);
 						let item = result[0].participants;
-						let moves = result[0].moves;
+						let moves = result[0].moves.reverse();
 						let id = result[0]._id;
 						res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body});
 					});
 	}
 });
+// register and login
 app.get('/register', (req, res) => {
 	res.render('register');
 });

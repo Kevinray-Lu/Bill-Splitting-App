@@ -226,19 +226,7 @@
                                         <tbody>
 										
 											<ol>
-											{{#each moves}}
-												<tr>
-													<td class="product-name"></td>
-													<td class="product-name">{{person}}</td>
-													<td class="product-price"><span class="amount">$ {{amount}}</span></td>
-													<td class="product-name">{{#each person_to}}{{@key}} : {{#if this}}{{this.toFixed 1}}{{/if}}$<br>{{/each}}</span></td>
-													<td class="product-name">{{description}}</span></td>
-													<td class="product-add-to-cart">
-													<form method="POST" action=""><input type="submit" name ={{id}} value="Delete"></form>
-													</td>
-												</tr>
-											{{/each}}
-											</ol>
+											
 											<script>
 											function choice() {
 												//method.percent=true;
@@ -280,10 +268,10 @@
 														{{/each}}
 														{{else}}
 														{{#each people}}
-													<div class='label-input'>
-														<label for="person">{{name}}</label>
-														<input type="checkbox" name="person" value="{{name}}">
-													</div>
+															<div class='label-input'>
+																<label for="person">{{name}}</label>
+																<input type="checkbox" name="person" value="{{name}}" checked>
+															</div>
 														{{/each}}
 														{{/if}}
 													
@@ -298,6 +286,20 @@
 													</td>
 										</tr>
 										</form>
+										<ol>
+											{{#each moves}}
+												<tr>
+													<td class="product-name"></td>
+													<td class="product-name">{{person}}</td>
+													<td class="product-price"><span class="amount">$ {{amount}}</span></td>
+													<td class="product-name">{{#each person_to}}{{@key}} : {{#if this}}{{this.toFixed 1}}{{/if}}$<br>{{/each}}</span></td>
+													<td class="product-name">{{description}}</span></td>
+													<td class="product-add-to-cart">
+													<form method="POST" action=""><input type="submit" name ={{id}} value="Delete"></form>
+													</td>
+												</tr>
+											{{/each}}
+										</ol>
 											<ol>
 											{{#each shop2}}
 												<tr>

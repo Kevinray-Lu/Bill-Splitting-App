@@ -199,7 +199,42 @@ app.post('/trips/:slug', function(req, res) {
 	slug1 = slug1[2];
 	// update the form if delete button is clicked
 	//console.log(req.body);
-	if (Object.values(req.body)[0] === "Delete") {
+	if (req.body.default !== undefined) {
+		console.log(req.body);
+		let save = {};
+		if (req.body.submethod === "split") {
+			const people = req.body.person;
+			for (const person of people) {
+				save[person] = 1;
+			}
+		} else if (req.body.submethod === "dollar") {
+			const ref = ["submethod", "subgroup", "default", "person"];
+			for (const person of Object.keys(req.body)) {
+				if (!(ref.includes(person))) {
+				save[person] = req.body[person][1];
+				}
+			}
+		} else {
+			const ref = ["submethod", "subgroup", "default", "person"];
+			for (const person of Object.keys(req.body)) {
+				if (!(ref.includes(person))) {
+				save[person] = req.body[person][0];
+				}
+			}
+		}
+		doc.findOneAndUpdate({_id: slug1}, {
+								"$push": {
+									"defaults": {name:req.body.subgroup, method: req.body.submethod, detail: save}}
+									},
+									(err, doc) => {
+										if (err) {
+											console.log(err);
+											console.log("Something wrong when updating data!");
+										}
+										res.redirect('/trips/'+slug1);
+									});					
+	}
+	else if (Object.values(req.body)[0] === "Delete") {
 		const remove = Object.keys(req.body)[0];
 		// first find the move
 		doc.findOne({"moves._id": remove}, {'moves.$': 1, participants:1}, (err, result) => {
@@ -274,10 +309,10 @@ app.post('/trips/:slug', function(req, res) {
 		// case for adding for splitting method, user enter numbers in splitting fields 
 		} else if (req.body.method === "dollar") {
 			let before = Object.keys(req.body);
-			const ref = ["method", "name", "amount", "description", "sub"];
+			const ref = ["method", "name", "amount", "description", "sub", "person"];
 			for (const item of before){
-				if (!(ref.includes(item)) && (req.body[item] !== '') && (parseFloat(req.body[item]) !== 0)) {
-					let temp = req.body[item].replace(/\s/g, '');
+				if (!(ref.includes(item)) && (req.body[item][1] !== '') && (parseFloat(req.body[item][1]) !== 0)) {
+					let temp = req.body[item][1].replace(/\s/g, '');
 					if (temp.includes(',')) {
 						temp = temp.split(',');
 					}
@@ -301,12 +336,12 @@ app.post('/trips/:slug', function(req, res) {
 		// case for sharing for splitting method, user enter shares for each in splitting fields
 		} else {
 			let before = Object.keys(req.body);
-			const ref = ["method", "name", "amount", "description", "sub"];
+			const ref = ["method", "name", "amount", "description", "sub", "person"];
 			let remain = [];
 			let partitions = 0
 			for (const item of before){
-				if (!(ref.includes(item)) && (req.body[item] !== '') && (parseFloat(req.body[item]) !== 0)) {
-					let temp = req.body[item].replace(/\s/g, '');
+				if (!(ref.includes(item)) && (req.body[item][0] !== '') && (parseFloat(req.body[item][0]) !== 0)) {
+					let temp = req.body[item][0].replace(/\s/g, '');
 					if (temp.includes(',')) {
 						temp = temp.split(',');
 					}
@@ -341,7 +376,7 @@ app.post('/trips/:slug', function(req, res) {
 					if (err) {console.log(err);}
 							//console.log(result);
 							let item = result[0].participants;
-							let moves = result[0].moves;
+							let moves = result[0].moves.reverse();
 							let id = result[0]._id;
 							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
 					});

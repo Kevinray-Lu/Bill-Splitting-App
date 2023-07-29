@@ -203,6 +203,129 @@
                 </div>
             </div>
         </div>
+		<div class="my-acount-desc">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<form method="POST">
+							<div class="form-fields">
+                            <h2>Create default Subgroup & Split</h2>
+                            {{#if message}}
+                            <div class="error">{{ message }}</div>
+							{{/if}}
+                                <p>
+                                    <label for="subgroup">Name of Plan: <span class="required">*</span></label>
+                                    <input type="text" name="subgroup">
+									<label for="submethod">Choose Default Method: <span class="required">*</span></label>
+									<div>
+										<input type="radio" name="submethod" value="percent"  onclick="subchoice()" >
+										<label for="percent">share</label><br>
+										<input type="radio" name="submethod" value="dollar"  onclick="subchoice()">
+										<label for="dollar">+-</label><br>
+										<input type="radio" name="submethod" value="split"  checked onclick="subchoice()">
+										<label for="split">split</label><br>
+									</div>
+									<p></p>
+									<label for="members">Enter Default Split: <span class="required">*</span></label>
+                                    <div class="product-name" id="subpercentContent">
+										{{#each people}}
+											<div class='label-input'>
+												<label for="person" class='align'>{{name}}</label>
+												<input type="text" name = "{{name}}" class='align'> share(s)
+											</div>
+										{{/each}}
+										
+									</div>
+									
+									<div class="product-name" id="subdollarContent">
+									
+										{{#each people}}
+											<div class='label-input'>
+												<label for="person">{{name}}</label>
+												<input type="text" name = "{{name}}" class='align'>$
+											</div>
+										{{/each}}
+									</div>
+								
+									<div class="product-name" id="subsplitContent">
+										{{#each people}}
+											<div class='label-input'>
+												<label for="person">{{name}}</label>
+												<input type="checkbox" name="person" value="{{name}}" onchange="updateCheckbox(this)">
+											</div>
+										{{/each}}
+										
+									</div>
+                                </p>   
+							<div class="add-product-button">
+
+								<input type="submit" name = "default" value="add" />
+								</div>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			window.onload = function() {
+			choice();
+			subchoice();
+			};
+		  function choice() {
+			// Get the selected method
+			const percentChecked = document.querySelector('input[name="method"][value="percent"]').checked;
+			const dollarChecked = document.querySelector('input[name="method"][value="dollar"]').checked;
+			const splitChecked = document.querySelector('input[name="method"][value="split"]').checked;
+
+			// Get the content containers
+			const percentContent = document.getElementById('percentContent');
+			const dollarContent = document.getElementById('dollarContent');
+			const splitContent = document.getElementById('splitContent');
+
+			// Show/hide the corresponding content based on the selected method
+			if (percentChecked) {
+			  percentContent.style.display = 'block';
+			  dollarContent.style.display = 'none';
+			  splitContent.style.display = 'none';
+			} else if (dollarChecked) {
+			  percentContent.style.display = 'none';
+			  dollarContent.style.display = 'block';
+			  splitContent.style.display = 'none';
+			} else if (splitChecked) {
+			  percentContent.style.display = 'none';
+			  dollarContent.style.display = 'none';
+			  splitContent.style.display = 'block';
+			}
+		  }
+		  function subchoice() {
+			// Get the selected method
+			const subpercentChecked = document.querySelector('input[name="submethod"][value="percent"]').checked;
+			const subdollarChecked = document.querySelector('input[name="submethod"][value="dollar"]').checked;
+			const subsplitChecked = document.querySelector('input[name="submethod"][value="split"]').checked;
+
+			// Get the content containers
+			const subpercentContent = document.getElementById('subpercentContent');
+			const subdollarContent = document.getElementById('subdollarContent');
+			const subsplitContent = document.getElementById('subsplitContent');
+
+			// Show/hide the corresponding content based on the selected method
+			if (subpercentChecked) {
+			  subpercentContent.style.display = 'block';
+			  subdollarContent.style.display = 'none';
+			  subsplitContent.style.display = 'none';
+			} else if (subdollarChecked) {
+			  subpercentContent.style.display = 'none';
+			  subdollarContent.style.display = 'block';
+			  subsplitContent.style.display = 'none';
+			} else if (subsplitChecked) {
+			  subpercentContent.style.display = 'none';
+			  subdollarContent.style.display = 'none';
+			  subsplitContent.style.display = 'block';
+			}
+		  }
+		</script>
         <div class="wishlist-area">
             <div class="container">
                 <div class="row">
@@ -227,61 +350,57 @@
 										
 											<ol>
 											
-											<script>
-											function choice() {
-												//method.percent=true;
-												document.getElementById("methods").submit();// Form submission
-												}
-											</script>
+										
 											<form method="POST" action="" id="methods">
 										<tr>
 													<td class="product-name">
 
-														<input type="radio" name="method" value="percent" {{#if method.percent}}checked{{/if}} onclick="choice()" >
-														<label for="percent">%</label><br>
-														<input type="radio" name="method" value="dollar" {{#if method.dollar}}checked{{/if}} onclick="choice()">
+														<input type="radio" name="method" value="percent"  onclick="choice()" >
+														<label for="percent">share</label><br>
+														<input type="radio" name="method" value="dollar"  onclick="choice()">
 														<label for="dollar">+-</label><br>
-														<input type="radio" name="method" value="split" {{#if method.split}}checked{{/if}} onclick="choice()">
+														<input type="radio" name="method" value="split"  checked onclick="choice()">
 														<label for="split">split</label><br>
 														</td>
 
 													<td class="product-name"><input type="text" name = "name" value={{info.name}}></td>
 													<td class="product-price"><span class="amount"><input type="text" name = "amount" value={{info.amount}}></span></td>
 													
-													<td class="product-name">
+													<td class="product-name" id="percentContent">
+														{{#each people}}
+															<div class='label-input' id="contentContainer">
+																<label for="person" class='align'>{{name}}</label>
+																<input type="text" name = "{{name}}" class='align'> share(s)
+															</div>
+														{{/each}}
+														
+													</td>
 													
-														{{#if method.percent}}
-										
-														{{#each people}}
-													<div class='label-input'>
-														<label for="person" class='align'>{{name}}</label>
-														<input type="text" name = "{{name}}" class='align'>%
-													</div>
-														{{/each}}
-												
-														{{else if method.dollar}}
-														{{#each people}}
-													<div class='label-input'>
-														<label for="person">{{name}}</label>
-														<input type="text" name = "{{name}}" class='align'>$
-													</div>
-														{{/each}}
-														{{else}}
+													<td class="product-name" id="dollarContent">
+													
 														{{#each people}}
 															<div class='label-input'>
 																<label for="person">{{name}}</label>
-																<input type="checkbox" name="person" value="{{name}}" checked>
+																<input type="text" name = "{{name}}" class='align'>$
 															</div>
 														{{/each}}
-														{{/if}}
-													
+													</td>
+												
+													<td class="product-name" id="splitContent">
+														{{#each people}}
+															<div class='label-input'>
+																<label for="person">{{name}}</label>
+																<input type="checkbox" name="person" value="{{name}}" onchange="updateCheckbox(this)">
+															</div>
+														{{/each}}
+														
 													</td>
 												
 													<td class="product-name"><input type="text" name = "description" value={{info.description}}></td>
 													
 													<td class="product-name">
 													<div class="add-product-button">
-														<input type="submit" name = "sub" value="Add" onclick="choice()"/>
+														<input type="submit" name = "sub" value="Add" />
 													</div>
 													</td>
 										</tr>
@@ -300,21 +419,6 @@
 												</tr>
 											{{/each}}
 										</ol>
-											<ol>
-											{{#each shop2}}
-												<tr>
-													<td class="product-name"><a href="/buy/{{id}}">{{title}}</a></td>
-													<td class="product-price"><span class="amount">$ {{price}}</span></td>
-													<td class="product-name">{{description}}</span></td>
-													<td class="product-add-to-cart">
-														<form method="POST" action=""><input type="submit" id = {{id}} name = {{id}} value="Finished">
-													</td>
-													<td class="product-add-to-cart">
-														<form method="POST" action=""><input type="submit" id = {{id}} name = {{id}} value="Denied">
-													</td>
-												</tr>
-											{{/each}}
-											</ol>
                                         </tbody>
                                     </table>
                                 </div>	
@@ -323,6 +427,7 @@
                 </div>
             </div>
         </div>
+
         <!--END YOUR ITEM AREA-->
 		
 		<!--USC LINK START-->
@@ -490,7 +595,5 @@
 		============================================ -->		
         <script src="/js/main.js"></script>
     </body>
-	<script>
-	var hello = "hello";
-	</script>
+
 </html>

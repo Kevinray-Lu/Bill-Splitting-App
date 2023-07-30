@@ -13,7 +13,14 @@ const doc = new mongoose.Schema({
 		person_to: {type: mongoose.Schema.Types.Mixed,
 					default: {}},
 		description: String
-    }]
+    }],
+	defaults:
+	[{
+		name: String,
+		method: String,
+		detail: {type: mongoose.Schema.Types.Mixed,
+					default: {}},
+	}]
 });
 
 const User = new mongoose.Schema({

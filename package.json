@@ -1,7 +1,7 @@
 {
-  "name": "551-final-trojans",
+  "name": "bill-splitting-app",
   "version": "1.0.0",
-  "description": "Trojans Online Resource Exchange Platform",
+  "description": "Application for Traveling Bill Splitting",
   "main": "app.js",
   "dependencies": {
     "accepts": "^1.3.8",
@@ -104,18 +104,21 @@
     "wrappy": "^1.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "build": "next build",
+    "start-next": "next start"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kevinray-Lu/551-Final-Trojans.git"
+    "url": "git+https://github.com/Kevinray-Lu/Bill-Splitting-App.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Kevinray-Lu/551-Final-Trojans/issues"
+    "url": "https://github.com/Kevinray-Lu/Bill-Splitting-App/issues"
   },
-  "homepage": "https://github.com/Kevinray-Lu/551-Final-Trojans#readme",
+  "homepage": "https://github.com/Kevinray-Lu/Bill-Splitting-App#readme",
   "engines": {
     "node": "16.x"
   }

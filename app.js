@@ -7,6 +7,7 @@ const User = mongoose.model('User');
 const session = require('express-session');
 const auth = require('./auth.js');
 const exphbs=require('express-handlebars');
+const handlebars = require('handlebars');
 var fs = require('fs');
 var path = require('path');
 
@@ -21,7 +22,6 @@ todo:
 */
 
 app.use(express.static('public'));
-app.set('view engine', 'hbs');
 app.use(express.urlencoded({ extended: false }));
 
 const sessionOptions = { 
@@ -43,9 +43,18 @@ var storage = multer.diskStorage({
 });
   
 var upload = multer({ storage: storage });
+
+
+app.set('view engine', 'hbs');
+
+
 app.get('/', function(req, res) {
     res.render('home');
 });
+handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+
 
 // renders for home page
 app.post('/', function(req, res) {
@@ -190,7 +199,9 @@ app.get('/trips/:slug', (req, res) => {
 				}
 				let moves = result[0].moves.reverse();
 				let id = result[0]._id;
-				res.render('1', {people: item, moves: moves, id: id, method: method});
+				let defaults = result[0].defaults;
+				console.log(defaults);
+				res.render('1', {people: item, subs: defaults.toObject(), moves: moves, id: id, method: method, json: function (context) { return JSON.stringify(context);  },});
 			});
 });
 
@@ -205,7 +216,7 @@ app.post('/trips/:slug', function(req, res) {
 		if (req.body.submethod === "split") {
 			const people = req.body.person;
 			for (const person of people) {
-				save[person] = 1;
+				save[person] = "1";
 			}
 		} else if (req.body.submethod === "dollar") {
 			const ref = ["submethod", "subgroup", "default", "person"];
@@ -376,9 +387,13 @@ app.post('/trips/:slug', function(req, res) {
 					if (err) {console.log(err);}
 							//console.log(result);
 							let item = result[0].participants;
+							for (participant of item) {
+								participant.balance = participant.balance * -1;
+							}
 							let moves = result[0].moves.reverse();
 							let id = result[0]._id;
-							res.render('1', {people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
+							let defaults = result[0].defaults;
+							res.render('1', {subs: defaults, people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
 					});
 		}
 		// update document by adding move to it 
@@ -420,7 +435,7 @@ app.post('/trips/:slug', function(req, res) {
 									});
 									//res.redirect('/trips/'+slug1);
 						}
-	// case when splitting method is changed, remember the entries entered by user and refresh the page to show the other method
+	// (do not need anymore) case when splitting method is changed, remember the entries entered by user and refresh the page to show the other method
 	}else{
 			//console.log(req.query);
 			let method = {"split": false, "dollar": false, "percent": false};

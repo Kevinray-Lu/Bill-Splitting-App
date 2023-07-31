@@ -1,0 +1,129 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+p {
+    margin: 0px;
+}
+
+/* Define styles for the header */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 20px 40px 20px 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    font-family: Arial, sans-serif;
+    margin: 0px;
+}
+
+.header-left img {
+    height: 30px; /* Adjust the height as needed */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-right button{
+    margin-left: 10px; /* Add some spacing between the elements */
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 7.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    transition: background-color 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.create-group-btn {
+    background-color: #fff;
+    color: #ffa903;
+}
+.create-group-btn:hover {
+    background-color: #f1f1f1;
+}
+
+.create-split-btn {
+    background-color: #ffa903;
+    color: #fff
+}
+.create-split-btn:hover {
+    background-color: #ffce3d;
+}
+
+.circle-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15px;
+    height: 15px;
+    background-color: transparent;
+    font-size: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.create-group-btn .circle-icon {
+    color: #ffa903;
+    border: 2px solid #ffa903;
+}
+.create-split-btn .circle-icon {
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.profile-picture {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 0.5px solid gainsboro;
+    margin-left: 15px;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: #ffa903;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+main {
+    margin: 0;
+    background-color: rgb(244, 244, 244) ;
+    font-family: Arial, Helvetica, sans-serif   ;
+}
+
+.main-head {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-head-left {
+    display: flex;
+    align-items: center;
+}
+
+.main-head-left .grp-blc {
+    font-size: 15px;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.main-head-left .spl-adv {
+    font-size: 15px;
+    font-style: italic;
+    cursor: pointer;
+}

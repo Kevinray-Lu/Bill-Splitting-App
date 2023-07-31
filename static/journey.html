@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>MY JOURNEY</title>
+        <link rel="stylesheet" href="./css/style.css">
+
+        <!-- Fontawesone Icon -->
+        <script src="https://kit.fontawesome.com/84295c7e37.js" crossorigin="anonymous"></script>
+    </head>
+        <body>
+            <header>
+                <div class="header-left">
+                    <img alt="LOGO"></img>
+                </div>
+                <div class="header-right">
+                    <button class="btn create-group-btn">
+                        <span class="circle-icon">+</span>
+                        CREATE GROUP
+                    </button>
+                    <button class="btn create-split-btn">
+                        <span class="circle-icon">+</span>
+                        CREATE SPLIT
+                    </button>
+                    <img alt="user" class="profile-picture"></img>
+                    <p class="user-name">USER NAME</p>
+                </div>
+            </header>
+            
+            <main>
+                <div class="main-head">
+                    <div class="main-head-left">
+                        <p class="grp-blc">Group Balance</p>
+                        <p class="spl-adv">Click To Check Split Advice</p>
+                    </div>
+                    <p>Share this trip: {{id}}</p>
+                </div>
+                
+                <p class="amount">$99.9</p>
+                <p>You Lent</p>
+                <table>
+                    <thead>
+                    {{#each people}}
+                    <th class="product-name"><span class="nobr">{{name}} : {{#if balance}}{{#with balance}}{{this.toFixed 2}}{{/with}}{{else}}0.00{{/if}}</span></th>
+                    {{/each}}
+                    </thead>
+                </table>
+            </main>
+            
+            <footer>
+                <p>&copy; 2023 Your Website</p>
+            </footer>
+
+            <div class="my-a-w-title">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="a-w-title">
+                                <h1></h1>
+                                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="wishlist-area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="wishlist-content">
+                                    <div class="wishlist-table table-responsive">
+                                    </div>	
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="wishlist-area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="wishlist-content">
+                                    <div class="wishlist-table table-responsive">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    {{!-- <th class="product-remove"><span class="nobr">Remove</span></th> --}}
+                                                    <th class="product-name"><span class="nobr">Method</span></th>
+                                                    <th class="product-name"><span class="nobr">Who Paid</span></th>
+                                                    
+                                                    <th class="product-price"><span class="nobr"> How much </span></th>
+                                                    <th class="product-name"><span class="nobr">For Who</span></th>
+    
+                                                    <th class="product-name"><span class="nobr">description</span></th>
+                                                    <th class="product-add-to-cart"><span class="nobr">Add/Delete</span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                                <ol>
+                                                
+                                                <script>
+                                                function choice() {
+                                                    //method.percent=true;
+                                                    document.getElementById("methods").submit();// Form submission
+                                                    }
+                                                </script>
+                                                <form method="POST" action="" id="methods">
+                                            <tr>
+                                                        <td class="product-name">
+    
+                                                            <input type="radio" name="method" value="percent" {{#if method.percent}}checked{{/if}} onclick="choice()" >
+                                                            <label for="percent">%</label><br>
+                                                            <input type="radio" name="method" value="dollar" {{#if method.dollar}}checked{{/if}} onclick="choice()">
+                                                            <label for="dollar">+-</label><br>
+                                                            <input type="radio" name="method" value="split" {{#if method.split}}checked{{/if}} onclick="choice()">
+                                                            <label for="split">split</label><br>
+                                                            </td>
+    
+                                                        <td class="product-name"><input type="text" name = "name" value={{info.name}}></td>
+                                                        <td class="product-price"><span class="amount"><input type="text" name = "amount" value={{info.amount}}></span></td>
+                                                        
+                                                        <td class="product-name">
+                                                        
+                                                            {{#if method.percent}}
+                                            
+                                                            {{#each people}}
+                                                        <div class='label-input'>
+                                                            <label for="person" class='align'>{{name}}</label>
+                                                            <input type="text" name = "{{name}}" class='align'>%
+                                                        </div>
+                                                            {{/each}}
+                                                    
+                                                            {{else if method.dollar}}
+                                                            {{#each people}}
+                                                        <div class='label-input'>
+                                                            <label for="person">{{name}}</label>
+                                                            <input type="text" name = "{{name}}" class='align'>$
+                                                        </div>
+                                                            {{/each}}
+                                                            {{else}}
+                                                            {{#each people}}
+                                                                <div class='label-input'>
+                                                                    <label for="person">{{name}}</label>
+                                                                    <input type="checkbox" name="person" value="{{name}}" checked>
+                                                                </div>
+                                                            {{/each}}
+                                                            {{/if}}
+                                                        
+                                                        </td>
+                                                    
+                                                        <td class="product-name"><input type="text" name = "description" value={{info.description}}></td>
+                                                        
+                                                        <td class="product-name">
+                                                        <div class="add-product-button">
+                                                            <input type="submit" name = "sub" value="Add" onclick="choice()"/>
+                                                        </div>
+                                                        </td>
+                                            </tr>
+                                            </form>
+                                            <ol>
+                                                {{#each moves}}
+                                                    <tr>
+                                                        <td class="product-name"></td>
+                                                        <td class="product-name">{{person}}</td>
+                                                        <td class="product-price"><span class="amount">$ {{amount}}</span></td>
+                                                        <td class="product-name">{{#each person_to}}{{@key}} : {{#if this}}{{this.toFixed 1}}{{/if}}$<br>{{/each}}</span></td>
+                                                        <td class="product-name">{{description}}</span></td>
+                                                        <td class="product-add-to-cart">
+                                                        <form method="POST" action=""><input type="submit" name ={{id}} value="Delete"></form>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                            </ol>
+                                                <ol>
+                                                {{#each shop2}}
+                                                    <tr>
+                                                        <td class="product-name"><a href="/buy/{{id}}">{{title}}</a></td>
+                                                        <td class="product-price"><span class="amount">$ {{price}}</span></td>
+                                                        <td class="product-name">{{description}}</span></td>
+                                                        <td class="product-add-to-cart">
+                                                            <form method="POST" action=""><input type="submit" id = {{id}} name = {{id}} value="Finished">
+                                                        </td>
+                                                        <td class="product-add-to-cart">
+                                                            <form method="POST" action=""><input type="submit" id = {{id}} name = {{id}} value="Denied">
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </ol>
+                                            </tbody>
+                                        </table>
+                                    </div>	
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--END YOUR ITEM AREA-->
+            
+            <!--USC LINK START-->
+            <div class="our-brand-area owl-indicator">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="brand-title">
+                                <h3>Related Links</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                    <!--
+                        <div class="brand-list">
+                            <div class="col-md-12">
+                                <div class="single-brand">
+                                    <a href="https://www.usc.edu/"><img src="/img/OW.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-brand">
+                                    <a href="https://my.usc.edu/"><img src="/img/myusc.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-brand">
+                                    <a href="https://libraries.usc.edu/"><img src="/img/library.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-brand">
+                                    <a href="https://usc.edu/myshr"><img src="/img/myshr.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-brand">
+                                    <a href="https://housing.usc.edu/"><img src="/img/uschousing.png" alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
+            <!--USC LINK END-->
+    
+            <!--FOOTER-AREA START-->
+            <div class="footer-area">
+                <div class="footer-list">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="single-footer classic">
+                                    <div class="logo">
+                                        <a href="/"><img src="img_t/logo.png" style="height:50px;" alt=""></a>
+                                    </div>
+                                    <div class="f-classic-text">
+                                        <p>This platfrom is an cost splitting website dedicated to group travelling spendings. Whether you would like to split equally, by shares, or by absolute values, there's always a way to split your bill.  </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="single-footer">
+                                    <h3>Contact Us</h3>
+                                </div>
+                                <div class="single-footer classic">
+                                    <div class="classic-adress">
+                                        <ul>
+                                            <li><a><i class="fa fa-phone"></i></a>cellphone number</li>
+                                            <li><a><i class="fa fa-envelope"></i></a>feedback@tthp.com</li>
+                                            <li><a><i class="fa fa-map-marker"></i></a>University of Southern California<span>Los Angeles, CA.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="single-footer">
+                                    <h3>T2HP</h3>
+                                    <div class="link-list">
+                                        <ul>
+                                            <li><a href="/">Home</a></li>
+                                            <li><a href="personal">Personal</a></li>
+                                            <li><a href="exist">Join Journey</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="single-footer">
+                                    <h3>USC Websites</h3>
+                                    <div class="link-list">
+                                        <ul>
+                                            <li><a href="https://www.usc.edu/">University of Southern California</a></li>
+                                            <li><a href="https://viterbischool.usc.edu/">School of Viterbi Engineering</a></li>
+                                            <li><a href="https://academics.usc.edu/">Academics</a></li>
+                                            <li><a href="https://about.usc.edu/">About USC</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="footer-copyright">
+                                    <p>Copyright &copy; 2023. All Rights Reserved.</p>
+                                </div>    
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </body>
+</html>
+    

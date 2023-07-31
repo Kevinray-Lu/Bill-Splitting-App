@@ -393,7 +393,7 @@ app.post('/trips/:slug', function(req, res) {
 							let moves = result[0].moves.reverse();
 							let id = result[0]._id;
 							let defaults = result[0].defaults;
-							res.render('1', {subs: defaults, people: item, moves: moves, id: id, method: method, info: req.body, error: "please double check the amount/people you entered"});
+							res.render('1', {subs: defaults, people: item, moves: moves, id: id, method: method, info: req.body, json: function (context) { return JSON.stringify(context);  }, error: "please double check the amount/people you entered"});
 					});
 		}
 		// update document by adding move to it 

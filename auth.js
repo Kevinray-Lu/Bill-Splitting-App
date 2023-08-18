@@ -4,25 +4,24 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 function register(username, email, password, errorCallback, successCallback) {
-		User.findOne({username: username},(err, result, count) => {
+		User.findOne({username: username},(err, result) => {
 			if (result) {
-				console.log('username exists!');
-				errorCallback({message: 'USERNAME ALREADY EXISTS'});
+                console.error('Username already exists!');
+                errorCallback({ message: 'USERNAME ALREADY EXISTS' });
 			} else {
-				bcrypt.hash(password, 10, function(err, hash) {
-					new User({
-						username: username,
-						email: email,
-						password: hash,
-						actions: [],
-					}).save(function(err, user, count){
-						if (err) {
-							console.log(count);
-							console.log('document save error!');
-							errorCallback({message: 'DOCUMENT SAVE ERROR'});
-						} else {
-							successCallback(user);
-						}
+                bcrypt.hash(password, 10, (err, hash) => {
+                    new User({
+                        username: username,
+                        email: email,
+                        password: hash,
+                        actions: [],
+                    }).save((err, user) => {
+                        if (err) {
+                            console.error('Document save error:', err);
+                            errorCallback({ message: 'DOCUMENT SAVE ERROR' });
+                        } else {
+                            successCallback(user);
+                        }
 					});
 				});
 			}
@@ -30,20 +29,19 @@ function register(username, email, password, errorCallback, successCallback) {
 }
 
 function login(username, password, errorCallback, successCallback) {
-	User.findOne({username: username}, (err, user, count) => {
-		if (!err && user) {
+	User.findOne({ username: username }, (err, user) => {
+		if (err || !user) {
+			console.error('User not found:', err);
+			errorCallback({ message: 'USER NOT FOUND' });
+		} else {
 			bcrypt.compare(password, user.password, (err, passwordMatch) => {
 				if (passwordMatch) {
 					successCallback(user);
 				} else {
-					console.log('passwords do not match!');
-					errorCallback({message: 'PASSWORDS DO NOT MATCH'});
+					console.error('Passwords do not match:', err);
+					errorCallback({ message: 'PASSWORDS DO NOT MATCH' });
 				}
 			});
-		} else {
-			console.log(err);
-			console.log('user not found!');
-			errorCallback({message: 'USER NOT FOUND'});
 		}
 	});
 }

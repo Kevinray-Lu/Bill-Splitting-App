@@ -460,17 +460,26 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
+    // Check for blank username or password
+	if (!req.body.username || !req.body.password) {
+		res.render('register', { message: 'USERNAME OR PASSWORD CANNOT BE BLANK' });
+		return;
+	}
+    
 	function success(user) {
-		auth.startAuthenticatedSession(req, user, (err = undefined) => {
+		auth.startAuthenticatedSession(req, user, err => {
 			if (err) {
-				console.log(err);
+				console.error('Error starting authenticated session:', err);
 			}
 			res.redirect('/');
 		});
 	}
+
 	function error(obj) {
-		res.render('register', {message: obj.message});
+		console.error('Registration error:', obj.message);
+		res.render('register', { message: obj.message });
 	}
+
 	auth.register(req.body.username, req.body.email, req.body.password, error, success);
 });
 
@@ -481,18 +490,20 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
 	function success(user) {
-		auth.startAuthenticatedSession(req, user, (err = undefined) => {
-			if(err) {
-				console.log(err);
+		auth.startAuthenticatedSession(req, user, err => {
+			if (err) {
+				console.error('Error starting authenticated session:', err);
 			}
 			res.redirect('/personal');
 		});
 	}
+
 	function error(obj) {
-		res.render('login', {message: obj.message});
+		console.error('Login error:', obj.message);
+		res.render('login', { message: obj.message });
 	}
+
 	auth.login(req.body.username, req.body.password, error, success);
-	
 });
 
 app.listen(process.env.PORT || 3000);

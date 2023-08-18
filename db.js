@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-//Item object for sale
 
 const doc = new mongoose.Schema({
 	name: String,

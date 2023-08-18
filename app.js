@@ -437,7 +437,9 @@ app.post('/trips/:slug', function(req, res) {
 					});
 	}
 });
-// register and login
+
+
+// Register
 app.get('/register', (req, res) => {
 	res.render('register');
 });
@@ -479,3 +481,7 @@ app.post('/login', (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000);
+// Logging
+app.listen(PORT, () => {
+    console.log(`Server started on http://localhost:${PORT}`);
+  });

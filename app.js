@@ -496,7 +496,3 @@ app.post('/login', (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000);
-// Logging
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
-  });

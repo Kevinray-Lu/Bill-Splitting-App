@@ -251,7 +251,7 @@
 										{{#each people}}
 											<div class='label-input'>
 												<label for="person">{{name}}</label>
-												<input type="checkbox" name="person" value="{{name}}" onchange="updateCheckbox(this)">
+												<input type="checkbox" name="person" value="{{name}}" >
 											</div>
 										{{/each}}
 										
@@ -300,6 +300,7 @@
 			}
 		  }
 		  function subchoice() {
+		  console.log("there");
 			// Get the selected method
 			const subpercentChecked = document.querySelector('input[name="submethod"][value="percent"]').checked;
 			const subdollarChecked = document.querySelector('input[name="submethod"][value="dollar"]').checked;
@@ -324,6 +325,30 @@
 			  subdollarContent.style.display = 'none';
 			  subsplitContent.style.display = 'block';
 			}
+		  }
+		  function updateFormFields(name, detail) {
+			// Get the form fields
+			console.log(detail);
+			const selectedDefault = detail.find((item) => item.name === name);
+			console.log(selectedDefault);
+			const method = selectedDefault.method;
+			const percentMethod = document.getElementById('percentMethod');
+			const dollarMethod = document.getElementById('dollarMethod');
+			const splitMethod = document.getElementById('splitMethod');
+			if (method === "split" || method === "percent") {
+				percentMethod.checked = true;
+			} else {
+				dollarMethod.checked = true;
+			}
+			choice();
+			const percentContent = document.getElementById('percentContent');
+			const inputs = percentContent.getElementsByTagName('input');
+			for (let i = 0; i < inputs.length; i++) {
+				const personName = inputs[i].name;
+				inputs[i].value = selectedDefault.detail[personName] || ''; // Fill the input with the corresponding value from selectedDefault.detail, or empty string if not found
+			  }
+
+
 		  }
 		</script>
         <div class="wishlist-area">
@@ -355,47 +380,58 @@
 										<tr>
 													<td class="product-name">
 
-														<input type="radio" name="method" value="percent"  onclick="choice()" >
+														<input type="radio" name="method" value="percent" id="percentMethod" onclick="choice()" >
 														<label for="percent">share</label><br>
-														<input type="radio" name="method" value="dollar"  onclick="choice()">
+														<input type="radio" name="method" value="dollar" id="dollarMethod" onclick="choice()">
 														<label for="dollar">+-</label><br>
-														<input type="radio" name="method" value="split"  checked onclick="choice()">
+														<input type="radio" name="method" value="split"  id="splitMethod" checked onclick="choice()">
 														<label for="split">split</label><br>
 														</td>
 
 													<td class="product-name"><input type="text" name = "name" value={{info.name}}></td>
 													<td class="product-price"><span class="amount"><input type="text" name = "amount" value={{info.amount}}></span></td>
 													
-													<td class="product-name" id="percentContent">
-														{{#each people}}
-															<div class='label-input' id="contentContainer">
-																<label for="person" class='align'>{{name}}</label>
-																<input type="text" name = "{{name}}" class='align'> share(s)
-															</div>
-														{{/each}}
+													<td class="product-name">
+
+														<div class='label-input'>																											
+															<label for="subgroups">Plans</label>
+															<select name="subgroups" onchange="updateFormFields(value, {{json subs}})">											
+															{{#each subs}}
+																<option value="{{name}}" >{{name}}</option>
+															{{/each}}
+															</select>
+														</div>
+														<div id="percentContent">
+															{{#each people}}
+																<div class='label-input'>
+																	<label for="person" class='align'>{{name}}</label>
+																	<input type="text" name = "{{name}}" class='align'> share(s)
+																</div>
+															{{/each}}
+															
+														</div>
 														
-													</td>
-													
-													<td class="product-name" id="dollarContent">
-													
-														{{#each people}}
-															<div class='label-input'>
-																<label for="person">{{name}}</label>
-																<input type="text" name = "{{name}}" class='align'>$
-															</div>
-														{{/each}}
-													</td>
-												
-													<td class="product-name" id="splitContent">
-														{{#each people}}
-															<div class='label-input'>
-																<label for="person">{{name}}</label>
-																<input type="checkbox" name="person" value="{{name}}" onchange="updateCheckbox(this)">
-															</div>
-														{{/each}}
+														<div id="dollarContent">
 														
+															{{#each people}}
+																<div class='label-input'>
+																	<label for="person">{{name}}</label>
+																	<input type="text" name = "{{name}}" class='align'>$
+																</div>
+															{{/each}}
+														</div>
+													
+														<div id="splitContent">
+															
+															{{#each people}}
+																<div class='label-input'>
+																	<label for="person">{{name}}</label>
+																	<input type="checkbox" name="person" value="{{name}}" >
+																</div>
+															{{/each}}
+															
+														</div>
 													</td>
-												
 													<td class="product-name"><input type="text" name = "description" value={{info.description}}></td>
 													
 													<td class="product-name">
